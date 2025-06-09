@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+#myVideo > video {
+    object-fit: cover;
+    border-radius: 0.2rem;
+}
+button {
+    cursor: pointer;
+}
