@@ -61,6 +61,10 @@ function initializeSocket(server) {
       const roomId = await redis.get(`socket:${socket.id}:room`);
       socket.to(roomId).emit('nego-done', ans);
     });
+    socket.on('call-end', async () => {
+      const roomId = await redis.get(`socket:${socket.id}:room`);
+      socket.to(roomId).emit('call-end');
+    });
 
     socket.on('disconnect', async () => {
       const roomId = await redis.get(`socket:${socket.id}:room`);

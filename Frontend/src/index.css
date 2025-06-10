@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-#myVideo > video {
+#myVideo video {
     object-fit: cover;
     border-radius: 0.2rem;
 }
