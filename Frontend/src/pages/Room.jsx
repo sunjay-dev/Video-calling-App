@@ -3,22 +3,15 @@ import { useSocket } from '../context/Socket.context';
 import ReactPlayer from 'react-player'
 import { useNavigate } from 'react-router-dom';
 import peer from '../services/peer';
-import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
-import VideocamIcon from '@mui/icons-material/Videocam';
-import VideocamOffIcon from '@mui/icons-material/VideocamOff';
-import MicOffIcon from '@mui/icons-material/MicOff';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
-import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
-import ZoomInMapIcon from '@mui/icons-material/ZoomInMap';
+import RoomToggles from '../components/RoomToggles';
 
 export default function Room() {
-  const navigate = useNavigate();
   const socket = useSocket();
+  const navigate = useNavigate();
   const [myStream, setMyStream] = useState();
   const [remoteStream, setRemoteStream] = useState();
-  const [videoState, setVideoState] = useState(true);
-  const [voiceState, setVoiceState] = useState(true);
   const [zoomState, setZoomState] = useState(true);
+
   // for Both
   useEffect(() => {
     (async () => {
@@ -83,7 +76,7 @@ export default function Room() {
       navigate('/');
     }, 1000);
   }, [navigate]);
-  
+
 
   useEffect(() => {
     socket.on('user-joined', handleNewUser);
@@ -108,6 +101,7 @@ export default function Room() {
       setRemoteStream(e.streams[0]);
     });
   }, []);
+  
   //creator
   const handleNegoNeededEventListner = useCallback(async () => {
     const offer = await peer.getOffer();
@@ -121,46 +115,11 @@ export default function Room() {
     };
   }, [handleNegoNeededEventListner]);
 
-  const handleMicState = useCallback((val) => {
-    setVoiceState(val);
-    peer.peer.getSenders().forEach(sender => {
-      if (sender.track?.kind === 'audio')
-        sender.track.enabled = val;
-    });
-  }, []);
-
-  const handleVideoState = useCallback((val) => {
-    setVideoState(val);
-    peer.peer.getSenders().forEach(sender => {
-      if (sender.track?.kind === 'video')
-        sender.track.enabled = val;
-    });
-  }, []);
-
-  const handleEndCall = useCallback(() => { 
-    const audio = new Audio('/sounds/call-end.mp3');
-    audio.play();
-    socket.emit('call-end')
-    setTimeout(() => {
-      peer.peer.getSenders().forEach(sender => {
-        if (sender.track) sender.track.stop();
-      });
-      peer.peer.close();
-      peer.reset();
-      console.log(peer)
-      setMyStream(null);
-      setRemoteStream(null);
-      navigate('/');  
-    }, 1000);
-
-  }, [navigate, socket]);
-
-
   return (
     <>
-      <div className="overflow-hidden w-dvw h-dvh" id={zoomState? 'myVideo': undefined}>
+      <div className="overflow-hidden w-dvw h-dvh" id={zoomState ? 'myVideo' : undefined}>
         {remoteStream ? (
-          <ReactPlayer 
+          <ReactPlayer
             url={remoteStream}
             playing
             width="100%"
@@ -189,42 +148,7 @@ export default function Room() {
           }}
         />
       </div>
-
-      <div className={`fixed bottom-3 left-1/2 transform -translate-x-1/2 z-10 flex gap-4 bg-white backdrop-blur-sm p-3 rounded-full shadow-md`}>
-        
-        {zoomState ? (
-          <button disabled={!myStream} onClick={() => setZoomState(false)} className="p-2 rounded-full hover:bg-gray-200">
-            <ZoomOutMapIcon />
-          </button>
-        ) : (
-          <button disabled={!myStream} onClick={() => setZoomState(true)} className="p-2 rounded-full hover:bg-gray-200">
-            <ZoomInMapIcon />
-          </button>
-        )}
-        {voiceState ? (
-          <button disabled={!myStream} onClick={() => handleMicState(false)} className="p-2 rounded-full hover:bg-gray-200">
-            <KeyboardVoiceIcon />
-          </button>
-        ) : (
-          <button disabled={!myStream} onClick={() => handleMicState(true)} className="p-2 rounded-full hover:bg-gray-200">
-            <MicOffIcon />
-          </button>
-        )}
-
-        {videoState ? (
-          <button disabled={!myStream} onClick={() => handleVideoState(false)} className="p-2 rounded-full hover:bg-gray-200">
-            <VideocamIcon />
-          </button>
-        ) : (
-          <button disabled={!myStream} onClick={() => handleVideoState(true)} className="p-2 rounded-full hover:bg-gray-200">
-            <VideocamOffIcon />
-          </button>
-        )}
-
-        <button onClick={handleEndCall} className="px-2.5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full">
-          <LocalPhoneIcon />
-        </button>
-      </div>
+      <RoomToggles setMyStream={setMyStream} setRemoteStream={setRemoteStream} zoomState={zoomState} setZoomState={setZoomState} />
     </>
   )
 }
