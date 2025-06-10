@@ -5,7 +5,7 @@ function App() {
     <>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/room/:roomId" element={<Room />} />
+      <Route path="/r/:roomId" element={<Room />} />
     </Routes>
     </>
   )

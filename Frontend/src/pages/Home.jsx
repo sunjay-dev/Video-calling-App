@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useSocket } from '../context/Socket.context';
 import { useNavigate } from 'react-router-dom';
-import Failed from '../components/failed';
+import {Failed} from '../components';
 export default function Home() {
   const navigate = useNavigate();
 
@@ -43,11 +43,11 @@ export default function Home() {
   }
 
   const handleRoomExists = useCallback(roomId => {
-    navigate(`/room/${roomId}`);
+    navigate(`/r/${roomId}`);
   }, [navigate])
 
   const handleRoomIdFromServer = useCallback(roomId => {
-    navigate(`/room/${roomId}`);
+    navigate(`/r/${roomId}`);
   }, [navigate]);
 
   const handleRoomNotExists = useCallback(() => {
