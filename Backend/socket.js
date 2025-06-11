@@ -10,7 +10,8 @@ function initializeSocket(server) {
 
   io.on('connection', (socket) => {
     socket.on('create-room', async () => {
-      const roomId = nanoid(10);
+      const roomId = nanoid(10).toLowerCase();
+      console.log(roomId)
       socket.join(roomId);
 
       await redis.set(`room:${roomId}`, 'active', 'EX', 3600);
