@@ -89,11 +89,11 @@ export default function Home() {
         <img src="/logo.png" alt="VideoMeet Logo" className="h-12" />
       </header>
 
-      <main className="flex-1 flex flex-col items-center sm:mt-12 mt-18 px-6 text-center">
-        <h1 className="md:text-6xl text-4xl font-semibold text-gray-600 sm:mb-2 mb-3">Start a Video Meeting</h1>
-        <p className="text-gray-500 sm:text-lg text-sm mb-8">Create a new room or join an existing one.</p>
+      <main className="flex flex-col items-center sm:mt-12 mt-18 px-6 text-center">
+        <h1 className="md:text-6xl text-5xl font-bold sm:font-semibold text-gray-600 sm:mb-2 mb-3">Start a Video Meeting</h1>
+        <p className="text-gray-500 sm:text-lg text-sm mt-0.5 sm:mt-0 mb-8">Create a new room or join an existing one.</p>
 
-        <div className="space-y-4 sm:p-0 p-6">
+        <div className="space-y-4 w-full sm:mt-0 mt-4 sm:px-0 px-6 max-w-sm mx-auto">
           {roomNotFound && <Failed message={errorMessage} />}
           {/* Create Room */}
           <button disabled={isProcessing} onClick={handleCreateRoom} className="w-full bg-[#5350a1] text-white px-6 py-3 rounded-lg flex justify-center items-center gap-2 hover:opacity-90 transition active:scale-[0.98]">
@@ -105,7 +105,7 @@ export default function Home() {
           <div className="text-sm text-gray-400 text-center">OR</div>
 
           {/* Join Room */}
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 w-full">
             <input value={roomInput}
               onChange={e => {
                 setRoomInput(e.target.value)
@@ -114,7 +114,7 @@ export default function Home() {
               name='roomId'
               type="text"
               placeholder="Enter Room ID"
-              className="flex-1 border border-gray-300 px-4 py-2 rounded-md outline-none focus:ring-2 focus:ring-[#5350a1]"
+              className="flex-4/5 min-w-0 border border-gray-300 px-4 py-2 rounded-md outline-none focus:ring-2 focus:ring-[#5350a1]"
             />
             <button disabled={isProcessing} onClick={handleJoinRoom} className="px-4 py-2 rounded-full flex items-center gap-2 hover:bg-[#5350a1] hover:text-white transition active:text-white active:bg-[#5350a1] active:scale-[0.98]">
               Join
