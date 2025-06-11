@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useSocket } from '../context/Socket.context';
 import { useNavigate } from 'react-router-dom';
-import {Failed} from '../components';
+import { Failed } from '../components';
+import VideoCallIcon from '@mui/icons-material/VideoCall';
+import CircularProgress from '@mui/material/CircularProgress';
+
 export default function Home() {
   const navigate = useNavigate();
 
@@ -9,6 +12,7 @@ export default function Home() {
   const [roomInput, setRoomInput] = useState('');
   const [roomNotFound, setRoomNotFound] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false)
 
   const handleAllowPermission = async () => {
     try {
@@ -23,6 +27,7 @@ export default function Home() {
 
 
   async function handleCreateRoom() {
+    setIsProcessing(true)
     const res = await handleAllowPermission();
     if (res)
       socket.emit('create-room');
@@ -30,9 +35,12 @@ export default function Home() {
       setErrorMessage('Please Allow Permissions for Camera and Mic');
       setRoomNotFound(true)
     }
+    setIsProcessing(false)
   }
 
   async function handleJoinRoom() {
+    if(roomInput === '') return;
+    setIsProcessing(true);
     const res = await handleAllowPermission();
     if (res)
       socket.emit('join-room', roomInput);
@@ -40,6 +48,7 @@ export default function Home() {
       setErrorMessage('Please Allow Permissions for Camera and Mic');
       setRoomNotFound(true)
     }
+    setIsProcessing(false)
   }
 
   const handleRoomExists = useCallback(roomId => {
@@ -52,7 +61,7 @@ export default function Home() {
 
   const handleRoomNotExists = useCallback(() => {
     setRoomInput('');
-    setErrorMessage("No room not found")
+    setErrorMessage("No Room found")
     setRoomNotFound(true)
   }, []);
 
@@ -70,16 +79,58 @@ export default function Home() {
 
 
   return (
-    <div className='text-center p-2 mt-12'>
-      {roomNotFound && <Failed message={errorMessage} />}
-      <input value={roomInput} onChange={e => {
-        setRoomInput(e.target.value)
-        roomNotFound ? setRoomNotFound(false) : '';
-      }}
-        className='border border-gray-300 p-2 m-4 rounded-lg w-1/2' placeholder='Enter room Id' />
-      <br />
-      <button onClick={handleJoinRoom} className='px-3 py-2 m-1 font-medium bg-blue-400 text-white rounded-lg active:scale-[1.02] hover:cursor-pointer'>Join room</button>
-      <button onClick={handleCreateRoom} className='px-3 py-2 m-1 font-medium bg-orange-400 text-white rounded-lg active:scale-[1.02] hover:cursor-pointer'>Create room</button>
+    <div className="w-dvw h-dvh flex flex-col bg-white text-gray-800 selection:text-white selection:bg-[#5350a1]">
+      {isProcessing && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <CircularProgress size={60} color="primary" />
+        </div>
+      )}
+      <header className="w-full p-4 flex items-center border-gray-200 select-none">
+        <img src="/logo.png" alt="VideoMeet Logo" className="h-12" />
+      </header>
+
+      <main className="flex-1 flex flex-col items-center sm:mt-12 mt-18 px-6 text-center">
+        <h1 className="md:text-6xl text-4xl font-semibold text-gray-600 sm:mb-2 mb-3">Start a Video Meeting</h1>
+        <p className="text-gray-500 sm:text-lg text-sm mb-8">Create a new room or join an existing one.</p>
+
+        <div className="space-y-4 sm:p-0 p-6">
+          {roomNotFound && <Failed message={errorMessage} />}
+          {/* Create Room */}
+          <button disabled={isProcessing} onClick={handleCreateRoom} className="w-full bg-[#5350a1] text-white px-6 py-3 rounded-lg flex justify-center items-center gap-2 hover:opacity-90 transition active:scale-[0.98]">
+            <VideoCallIcon fontSize="small" />
+            Create New Room
+          </button>
+
+          {/* Divider */}
+          <div className="text-sm text-gray-400 text-center">OR</div>
+
+          {/* Join Room */}
+          <div className="flex flex-row gap-2">
+            <input value={roomInput}
+              onChange={e => {
+                setRoomInput(e.target.value)
+                roomNotFound ? setRoomNotFound(false) : '';
+              }}
+              name='roomId'
+              type="text"
+              placeholder="Enter Room ID"
+              className="flex-1 border border-gray-300 px-4 py-2 rounded-md outline-none focus:ring-2 focus:ring-[#5350a1]"
+            />
+            <button disabled={isProcessing} onClick={handleJoinRoom} className="px-4 py-2 rounded-full flex items-center gap-2 hover:bg-[#5350a1] hover:text-white transition active:text-white active:bg-[#5350a1] active:scale-[0.98]">
+              Join
+            </button>
+          </div>
+        </div>
+        {/* 3 dots */}
+        <div className="mt-12 text-sm text-gray-500 flex items-center gap-2">
+          <span className="text-gray-400">·</span>
+          <span>Secure</span>
+          <span className="text-gray-400">·</span>
+          <span>Fast</span>
+          <span className="text-gray-400">·</span>
+          <span>No sign-up needed</span>
+        </div>
+      </main>
     </div>
-  )
+  );
 }
