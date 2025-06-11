@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+body {
+    font-family: Inter;
+    background-image: radial-gradient(circle, #ccc 0.5px, transparent 0.5px);
+    background-size: 20px 20px;
+}
+
 #myVideo video {
     object-fit: cover;
     border-radius: 0.2rem;

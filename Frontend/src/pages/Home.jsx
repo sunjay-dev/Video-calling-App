@@ -34,10 +34,10 @@ export default function Home() {
       setErrorMessage('Please Allow Permissions for Camera and Mic');
       setRoomNotFound(true)
     }
-    setIsProcessing(false)
   }
 
-  async function handleJoinRoom() {
+  async function handleJoinRoom(e) {
+    e.preventDefault();
     if(roomInput === '') return;
     setIsProcessing(true);
     const res = await handleAllowPermission();
@@ -47,21 +47,23 @@ export default function Home() {
       setErrorMessage('Please Allow Permissions for Camera and Mic');
       setRoomNotFound(true)
     }
-    setIsProcessing(false)
   }
 
   const handleRoomExists = useCallback(roomId => {
     navigate(`/room/${roomId}`);
+    setIsProcessing(false)
   }, [navigate])
 
   const handleRoomIdFromServer = useCallback(roomId => {
     navigate(`/room/${roomId}`);
+    setIsProcessing(false)
   }, [navigate]);
 
   const handleRoomNotExists = useCallback(() => {
     setRoomInput('');
     setErrorMessage("No Room found")
-    setRoomNotFound(true)
+    setRoomNotFound(true);
+    setIsProcessing(false)
   }, []);
 
   useEffect(() => {
@@ -78,7 +80,7 @@ export default function Home() {
 
 
   return (
-    <div className="w-dvw h-dvh flex flex-col bg-white text-gray-800 selection:text-white selection:bg-[#5350a1]">
+    <div className="w-dvw h-dvh flex flex-col text-gray-800 selection:text-white selection:bg-[#5350a1]">
       {isProcessing && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <CircularProgress size={60} color="primary" />
@@ -104,7 +106,7 @@ export default function Home() {
           <div className="text-sm text-gray-400 text-center">OR</div>
 
           {/* Join Room */}
-          <div className="flex flex-row gap-2 w-full">
+          <form onSubmit={e=> handleJoinRoom(e)}  className="flex flex-row gap-2 w-full">
             <input value={roomInput}
               onChange={e => {
                 setRoomInput(e.target.value)
@@ -115,13 +117,13 @@ export default function Home() {
               placeholder="Enter Room ID"
               className="flex-4/5 min-w-0 border border-gray-300 px-4 py-2 rounded-md outline-none focus:ring-2 focus:ring-[#5350a1]"
             />
-            <button disabled={isProcessing} onClick={handleJoinRoom} className="px-4 py-2 rounded-full flex items-center gap-2 hover:bg-[#5350a1] hover:text-white transition active:text-white active:bg-[#5350a1] active:scale-[0.98]">
+            <button disabled={isProcessing} type='submit' className="px-4 py-2 rounded-full flex items-center gap-2 hover:bg-[#5350a1] hover:text-white transition active:text-white active:bg-[#5350a1] active:scale-[0.98]">
               Join
             </button>
-          </div>
+          </form>
         </div>
         {/* 3 dots */}
-        <div className="mt-12 text-sm text-gray-500 flex items-center gap-2">
+        <div className="sm:mt-12 mt-14 text-sm text-gray-500 flex items-center gap-2">
           <span className="text-gray-400">·</span>
           <span>Secure</span>
           <span className="text-gray-400">·</span>
