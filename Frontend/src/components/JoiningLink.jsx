@@ -1,8 +1,9 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useState } from 'react';
-
+import { useParams } from 'react-router-dom';
 export default function RoomLinkBar() {
-    const [roomURL] = useState(()=> window.location.href);
+    const { roomId } = useParams();
+    const [roomURL] = useState(()=> window.location.origin + "/r/"+ roomId);
     const handleCopy = () => {
         navigator.clipboard.writeText(roomURL).then(() => {
             console.log("Copied successfully!");
@@ -17,6 +18,5 @@ export default function RoomLinkBar() {
             />
             <ContentCopyIcon onClick={handleCopy} fontSize="medium" className="cursor-pointer active:scale-[1.2]" />
         </div>
-
     );
 }

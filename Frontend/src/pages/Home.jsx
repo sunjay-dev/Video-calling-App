@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useSocket } from '../context/Socket.context';
 import { useNavigate } from 'react-router-dom';
 import { Failed } from '../components';
@@ -24,7 +24,6 @@ export default function Home() {
       return false;
     }
   };
-
 
   async function handleCreateRoom() {
     setIsProcessing(true)
@@ -52,11 +51,11 @@ export default function Home() {
   }
 
   const handleRoomExists = useCallback(roomId => {
-    navigate(`/r/${roomId}`);
+    navigate(`/room/${roomId}`);
   }, [navigate])
 
   const handleRoomIdFromServer = useCallback(roomId => {
-    navigate(`/r/${roomId}`);
+    navigate(`/room/${roomId}`);
   }, [navigate]);
 
   const handleRoomNotExists = useCallback(() => {
@@ -71,8 +70,8 @@ export default function Home() {
     socket.on('room-exists', handleRoomExists);
 
     return () => {
-      socket.off('room-not-exists', handleRoomNotExists);
       socket.off('get-room-id', handleRoomIdFromServer);
+      socket.off('room-not-exists', handleRoomNotExists);
       socket.off('room-exists', handleRoomExists);
     }
   }, [socket, handleRoomIdFromServer, handleRoomNotExists, handleRoomExists]);
