@@ -1,16 +1,16 @@
+const iceServers = [
+  { "url": "stun:stun.l.google.com:19301" },
+  {
+    urls: "turn:global.relay.metered.ca:443",
+    username: "27f119cf6c90ddebd24b934d",
+    credential: "Of6VqsrBok1//7Vt",
+  }
+]
+
 class PeerService {
   constructor() {
     if (!this.peer) {
-      this.peer = new RTCPeerConnection({
-        iceServers: [
-          {
-            urls: [
-              "stun:stun.l.google.com:19302",
-              "stun:global.stun.twilio.com:3478",
-            ],
-          },
-        ],
-      });
+      this.peer = new RTCPeerConnection({ iceServers });
     }
   }
 
@@ -24,10 +24,10 @@ class PeerService {
   }
 
   reset() {
-    this.peer = new RTCPeerConnection();
+    this.peer = new RTCPeerConnection({ iceServers});
   }
 
-  async setLocalDescription(ans) {
+  async setRemoteDescription(ans) {
     if (this.peer) {
       await this.peer.setRemoteDescription(new RTCSessionDescription(ans));
     }

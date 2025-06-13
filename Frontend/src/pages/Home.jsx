@@ -33,6 +33,7 @@ export default function Home() {
     else {
       setErrorMessage('Please Allow Permissions for Camera and Mic');
       setRoomNotFound(true)
+      setIsProcessing(false)
     }
   }
 

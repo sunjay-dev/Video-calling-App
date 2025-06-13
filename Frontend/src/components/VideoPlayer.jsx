@@ -1,9 +1,9 @@
 import ReactPlayer from 'react-player'
 
-export default function VideoPlayer({zoomState, remoteStream, myStream}) {
+export default function VideoPlayer({ zoomState, remoteStream, myStream }) {
   return (
     <>
-    <div className="overflow-hidden w-dvw h-dvh" id={zoomState ? 'myVideo' : undefined}>
+      <div className="overflow-hidden w-dvw h-dvh" id={zoomState ? 'myVideo' : undefined}>
         {remoteStream ? (
           <ReactPlayer
             url={remoteStream}
@@ -34,6 +34,6 @@ export default function VideoPlayer({zoomState, remoteStream, myStream}) {
           }}
         />
       </div>
-      </>
+    </>
   )
 }

@@ -2,7 +2,7 @@ import { useEffect, useCallback, useState } from 'react'
 import { useSocket } from '../context/Socket.context';
 import { useNavigate } from 'react-router-dom';
 import peer from '../services/peer';
-import {VideoPlayer, RoomToggles, JoiningLink} from '../components';
+import { VideoPlayer, RoomToggles, JoiningLink } from '../components';
 
 export default function Room() {
   const socket = useSocket();
@@ -20,13 +20,7 @@ export default function Room() {
           video: true,
         });
         setMyStream(stream);
-
-        const audioTrack = stream.getAudioTracks()[0];
-        const videoTrack = stream.getVideoTracks()[0];
-
-        if (audioTrack) peer.peer.addTrack(audioTrack, stream);
-        if (videoTrack) peer.peer.addTrack(videoTrack, stream);
-
+        stream.getTracks().forEach(track => peer.peer.addTrack(track, stream));
       } catch (err) {
         console.error("Error getting media stream:", err);
       }
@@ -47,12 +41,12 @@ export default function Room() {
 
   //for creator
   const handleOfferAccepted = useCallback(async (ans) => {
-    await peer.setLocalDescription(ans);
+    await peer.setRemoteDescription(ans);
   }, []);
 
   //creator
   const handleNegoDone = useCallback(async (ans) => {
-    await peer.setLocalDescription(ans);
+    await peer.setRemoteDescription(ans);
   }, []);
 
   //joiner
