@@ -1,10 +1,30 @@
 const iceServers = [
-  { "url": "stun:stun.l.google.com:19301" },
   {
-    urls: "turn:global.relay.metered.ca:443",
-    username: "27f119cf6c90ddebd24b934d",
-    credential: "Of6VqsrBok1//7Vt",
-  }
+    urls: [
+      "stun:stun.l.google.com:19302",
+      "stun:global.stun.twilio.com:3478",
+    ]
+  },
+  {
+        urls: "turn:global.relay.metered.ca:80",
+        username: "27f119cf6c90ddebd24b934d",
+        credential: "Of6VqsrBok1//7Vt",
+      },
+      {
+        urls: "turn:global.relay.metered.ca:80?transport=tcp",
+        username: "27f119cf6c90ddebd24b934d",
+        credential: "Of6VqsrBok1//7Vt",
+      },
+      {
+        urls: "turn:global.relay.metered.ca:443",
+        username: "27f119cf6c90ddebd24b934d",
+        credential: "Of6VqsrBok1//7Vt",
+      },
+      {
+        urls: "turns:global.relay.metered.ca:443?transport=tcp",
+        username: "27f119cf6c90ddebd24b934d",
+        credential: "Of6VqsrBok1//7Vt",
+      },
 ]
 
 class PeerService {
@@ -24,7 +44,7 @@ class PeerService {
   }
 
   reset() {
-    this.peer = new RTCPeerConnection({ iceServers});
+    this.peer = new RTCPeerConnection({ iceServers });
   }
 
   async setRemoteDescription(ans) {
@@ -39,7 +59,6 @@ class PeerService {
       await this.peer.setLocalDescription(new RTCSessionDescription(offer));
       return offer;
     }
-  }
+  }  
 }
-
 export default new PeerService();

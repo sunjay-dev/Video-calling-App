@@ -45,15 +45,22 @@ export default function JoinRedirect() {
     setTimeout(() => navigate('/'), 2000);
   }, [navigate]);
 
+  const handleRoomFull = useCallback(() => {
+    setError("Oops! room is already full, Redirecting to home page.")
+    setTimeout(() => navigate('/'), 2000);
+  }, [navigate]);
+
 
   useEffect(() => {
     socket.on('room-not-exists', handleRoomNotExists);
     socket.on('room-exists', handleRoomExists);
+    socket.on('room-full', handleRoomFull);
     return () => {
       socket.off('room-not-exists', handleRoomNotExists);
       socket.off('room-exists', handleRoomExists);
+      socket.off('room-full', handleRoomFull);
     }
-  }, [handleRoomExists, handleRoomNotExists, socket])
+  }, [handleRoomExists, handleRoomFull, handleRoomNotExists, socket])
 
   if (loading) {
     return (

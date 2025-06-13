@@ -10,7 +10,7 @@ export default function Room() {
   const [myStream, setMyStream] = useState();
   const [remoteStream, setRemoteStream] = useState();
   const [zoomState, setZoomState] = useState(true);
-
+  // const hasStartedRef = useRef(false);
   // for Both
   useEffect(() => {
     (async () => {
@@ -42,7 +42,9 @@ export default function Room() {
   //for creator
   const handleOfferAccepted = useCallback(async (ans) => {
     await peer.setRemoteDescription(ans);
-  }, []);
+    const offer = await peer.getOffer();
+    socket.emit("nego-needed", offer);
+  }, [socket]);
 
   //creator
   const handleNegoDone = useCallback(async (ans) => {
@@ -95,17 +97,22 @@ export default function Room() {
   }, []);
 
   //creator
-  const handleNegoNeededEventListner = useCallback(async () => {
-    const offer = await peer.getOffer();
-    socket.emit("nego-needed", offer);
-  }, [socket]);
+  // const handleNegoNeededEventListener = useCallback(async () => {
+  //   if (!hasStartedRef.current) {
+  //     hasStartedRef.current = true;
+  //     return;
+  //   }
+  //   console.log("negotiationneeded triggered!");
+  //   const offer = await peer.getOffer();
+  //   socket.emit("nego-needed", offer);
+  // }, [socket]);
 
-  useEffect(() => {
-    peer.peer.addEventListener("negotiationneeded", handleNegoNeededEventListner);
-    return () => {
-      peer.peer.removeEventListener("negotiationneeded", handleNegoNeededEventListner);
-    };
-  }, [handleNegoNeededEventListner]);
+  // useEffect(() => {
+  //   peer.peer.addEventListener("negotiationneeded", handleNegoNeededEventListener);
+  //   return () => {
+  //     peer.peer.removeEventListener("negotiationneeded", handleNegoNeededEventListener);
+  //   };
+  // }, [handleNegoNeededEventListener]);
 
   return (
     <>

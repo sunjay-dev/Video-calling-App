@@ -67,17 +67,26 @@ export default function Home() {
     setIsProcessing(false)
   }, []);
 
+  const handleRoomFull = useCallback(() => {
+    setRoomInput('');
+    setErrorMessage("Oops! Room is already full")
+    setRoomNotFound(true);
+    setIsProcessing(false)
+  }, []);
+
   useEffect(() => {
     socket.on('get-room-id', handleRoomIdFromServer);
     socket.on('room-not-exists', handleRoomNotExists);
+    socket.on('room-full', handleRoomFull);
     socket.on('room-exists', handleRoomExists);
 
     return () => {
       socket.off('get-room-id', handleRoomIdFromServer);
       socket.off('room-not-exists', handleRoomNotExists);
+      socket.off('room-full', handleRoomFull);
       socket.off('room-exists', handleRoomExists);
     }
-  }, [socket, handleRoomIdFromServer, handleRoomNotExists, handleRoomExists]);
+  }, [socket, handleRoomIdFromServer, handleRoomNotExists, handleRoomExists, handleRoomFull]);
 
 
   return (

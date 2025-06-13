@@ -5,79 +5,67 @@ let io;
 
 function initializeSocket(server) {
   io = socketIo(server, {
-  cors: true
-});
+    cors: true
+  });
 
   io.on('connection', (socket) => {
     socket.on('create-room', async () => {
       const roomId = nanoid(10).toLowerCase();
-      console.log(roomId)
       socket.join(roomId);
-
-      await redis.set(`room:${roomId}`, 'active', 'EX', 3600);
-      await redis.sadd(`room:${roomId}:members`, socket.id);
-      await redis.set(`socket:${socket.id}:room`, roomId);
-
+      
+      await redis.hset('socket', socket.id, roomId); 
       socket.emit('get-room-id', roomId);
     });
 
     socket.on('join-room', async (roomId) => {
-
-      const exists = await redis.exists(`room:${roomId}`);
-
-      if (!exists) {
+      const room = io.sockets.adapter.rooms.get(roomId);
+      if (!room) {
         socket.emit('room-not-exists');
         return;
       }
-
-      const oldRoomId = await redis.get(`socket:${socket.id}:room`);
-      if (oldRoomId && oldRoomId !== roomId) {
-        await redis.srem(`room:${oldRoomId}:members`, socket.id);
+      console.log(room.size)
+      if(room.size >= 2){
+        socket.emit('room-full');
+        return;
       }
-
       socket.join(roomId);
-
-      await redis.set(`socket:${socket.id}:room`, roomId);
-      await redis.sadd(`room:${roomId}:members`, socket.id);
-
       socket.emit('room-exists', roomId);
+
+      await redis.hset('socket', socket.id, roomId); 
 
       socket.to(roomId).emit('user-joined');
     });
 
     socket.on('send-offer', async (offer) => {
-      const roomId = await redis.get(`socket:${socket.id}:room`);
+      const roomId = await redis.hget('socket', socket.id);
       socket.to(roomId).emit('accept-offer', offer);
     });
 
     socket.on('offer-accepted', async (ans) => {
-      const roomId = await redis.get(`socket:${socket.id}:room`);
+      const roomId = await redis.hget('socket', socket.id);
       socket.to(roomId).emit('offer-accepted', ans);
     });
     socket.on('nego-needed', async (offer) => {
-      const roomId = await redis.get(`socket:${socket.id}:room`);
+      const roomId = await redis.hget('socket', socket.id);
       socket.to(roomId).emit('nego-needed', offer);
     });
     socket.on('nego-done', async (ans) => {
-      const roomId = await redis.get(`socket:${socket.id}:room`);
+      const roomId = await redis.hget('socket', socket.id);
       socket.to(roomId).emit('nego-done', ans);
     });
     socket.on('call-end', async () => {
-      const roomId = await redis.get(`socket:${socket.id}:room`);
+      console.log("Call-end")
+      const roomId = await redis.hget('socket', socket.id);
       socket.to(roomId).emit('call-end');
+      socket.leave(roomId);
     });
 
     socket.on('disconnect', async () => {
-      const roomId = await redis.get(`socket:${socket.id}:room`);
+      console.log(socket.id, " disconnected")
+      const roomId = await redis.hget('socket', socket.id);
       if (roomId) {
-        await redis.srem(`room:${roomId}:members`, socket.id);
-        const remaining = await redis.scard(`room:${roomId}:members`);
-
-        if (remaining === 0) {
-          await redis.del(`room:${roomId}`);
-          await redis.del(`room:${roomId}:members`);
-        }
-        await redis.del(`socket:${socket.id}:room`);
+        socket.to(roomId).emit('call-end');
+        socket.leave(roomId);
       }
     });
   });
