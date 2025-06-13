@@ -7,7 +7,7 @@ export default function JoinRedirect() {
   const socket = useSocket();
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [permissionError, setPermissionError] = useState(false);
   const handleAllowPermission = useCallback(async () => {
     try {
       const tempStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
@@ -29,6 +29,7 @@ export default function JoinRedirect() {
     else {
       setLoading(false);
       setError("Camera/Mic permission was denied. Please enable it from your browser settings and click 'Try Again'.");
+      setPermissionError(true);
     }
   }, [handleAllowPermission, roomId, socket]);
 
@@ -73,12 +74,12 @@ export default function JoinRedirect() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen px-4">
         <p className="text-red-500 text-center mb-4">{error}</p>
-        <button
+        {permissionError && <button
           onClick={handleRedirect}
           className="w-62 max-w-sm bg-[#5350a1] text-white py-3 rounded-lg text-lg font-medium hover:opacity-90 active:scale-[0.98] transition"
         >
           Try Again
-        </button>
+        </button>}
       </div>
     );
   }

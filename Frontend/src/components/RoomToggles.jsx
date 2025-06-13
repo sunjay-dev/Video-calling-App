@@ -7,7 +7,7 @@ import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import MicOffIcon from '@mui/icons-material/MicOff';
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
+import CallEndIcon from '@mui/icons-material/CallEnd';
 import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import ZoomInMapIcon from '@mui/icons-material/ZoomInMap';
 
@@ -83,8 +83,8 @@ export default function RoomToggles({setMyStream, setRemoteStream, zoomState, se
                 </button>
             )}
 
-            <button onClick={handleEndCall} className="px-2.5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full">
-                <LocalPhoneIcon />
+            <button onClick={handleEndCall} className="p-2 bg-red-600 hover:bg-red-700 text-white rounded-full">
+                <CallEndIcon />
             </button>
         </div>
     )
