@@ -39,11 +39,11 @@ export default function Home() {
 
   async function handleJoinRoom(e) {
     e.preventDefault();
-    if(roomInput === '') return;
+    if(roomInput.trim() === '') return;
     setIsProcessing(true);
     const res = await handleAllowPermission();
     if (res)
-      socket.emit('join-room', roomInput);
+      socket.emit('join-room', roomInput.trim());
     else {
       setErrorMessage('Please Allow Permissions for Camera and Mic');
       setRoomNotFound(true)

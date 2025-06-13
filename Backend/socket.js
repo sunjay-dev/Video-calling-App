@@ -12,8 +12,8 @@ function initializeSocket(server) {
     socket.on('create-room', async () => {
       const roomId = nanoid(10).toLowerCase();
       socket.join(roomId);
-      
-      await redis.hset('socket', socket.id, roomId); 
+
+      await redis.hset('socket', socket.id, roomId);
       socket.emit('get-room-id', roomId);
     });
 
@@ -23,15 +23,14 @@ function initializeSocket(server) {
         socket.emit('room-not-exists');
         return;
       }
-      console.log(room.size)
-      if(room.size >= 2){
+      if (room.size >= 2) {
         socket.emit('room-full');
         return;
       }
       socket.join(roomId);
       socket.emit('room-exists', roomId);
 
-      await redis.hset('socket', socket.id, roomId); 
+      await redis.hset('socket', socket.id, roomId);
 
       socket.to(roomId).emit('user-joined');
     });
@@ -54,19 +53,20 @@ function initializeSocket(server) {
       socket.to(roomId).emit('nego-done', ans);
     });
     socket.on('call-end', async () => {
-      console.log("Call-end")
       const roomId = await redis.hget('socket', socket.id);
       socket.to(roomId).emit('call-end');
       socket.leave(roomId);
+      await redis.hdel('socket', socket.id);
     });
 
     socket.on('disconnect', async () => {
-      console.log(socket.id, " disconnected")
+      console.log(socket.id, " disconnected");
       const roomId = await redis.hget('socket', socket.id);
-      if (roomId) {
-        socket.to(roomId).emit('call-end');
-        socket.leave(roomId);
-      }
+      if (!roomId) return;
+
+      socket.to(roomId).emit('call-end');
+      socket.leave(roomId);
+      await redis.hdel('socket', socket.id);
     });
   });
 }

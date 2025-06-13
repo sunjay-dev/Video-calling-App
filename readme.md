@@ -30,7 +30,7 @@ A real-time one-on-one video calling application built using **React**, **WebRTC
 
 ```bash
 git clone https://github.com/sunjay-dev/Video-calling-App
-cd video-call-app
+cd video-calling-App
 ````
 
 ### 2. Install dependencies
@@ -124,21 +124,21 @@ Make sure to allow permissions in your browser.
 |   └── server.js          
 │   └── socket.js 
 |
+├── Assests/            # ScreenShots of App
 ├── README.md
 ```
 
 ---
 
 ## 📸 Screenshots
-#### Home
-<img src="https://github.com/user-attachments/assets/5c17507d-8634-4326-99e9-4fbba025853e" width= "600">
-<br />
 
-#### Room 
-<img src="https://github.com/user-attachments/assets/e7d67f64-3933-44e1-b60f-5d43d6afd416" width= "600">
-<br />
+#### Home  
+<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/Assets/home.png" alt="Home page screenshot"  width="600"/>
 
-#### 404 Page 
-<img src="https://github.com/user-attachments/assets/889bff7b-cca2-4560-9cbb-ace71be46cdc" width= "600">
+#### Room  
+<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/Assets/room.png" alt="Room page screenshot"  width="600"/>
+
+#### 404 Page  
+<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/Assets/404.png" alt="404 page screenshot"  width="600"/>
 
 ---
