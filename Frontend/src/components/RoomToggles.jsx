@@ -12,7 +12,7 @@ import ZoomOutMapIcon from '@mui/icons-material/ZoomOutMap';
 import ZoomInMapIcon from '@mui/icons-material/ZoomInMap';
 
 
-export default function RoomToggles({setMyStream, setRemoteStream, zoomState, setZoomState}) {
+export default function RoomToggles({setMyStream, setRemoteStream, zoomState, setZoomState, callEndAudioRef}) {
     const socket = useSocket();
     const navigate = useNavigate();
     const [videoState, setVideoState] = useState(true);
@@ -35,8 +35,7 @@ export default function RoomToggles({setMyStream, setRemoteStream, zoomState, se
     }, []);
 
     const handleEndCall = useCallback(() => {
-        const audio = new Audio('/sounds/call-end.mp3');
-        audio.play();
+        callEndAudioRef.current?.play();
         socket.emit('call-end')
         setTimeout(() => {
             peer.peer.getSenders().forEach(sender => {
@@ -49,7 +48,7 @@ export default function RoomToggles({setMyStream, setRemoteStream, zoomState, se
             navigate('/');
         }, 1000);
 
-    }, [navigate, setMyStream, setRemoteStream, socket]);
+    }, [callEndAudioRef, navigate, setMyStream, setRemoteStream, socket]);
 
     return (
         <div className={`fixed bottom-3 left-1/2 transform -translate-x-1/2 z-10 flex gap-4 bg-white backdrop-blur-sm p-3 rounded-full shadow-md`}>

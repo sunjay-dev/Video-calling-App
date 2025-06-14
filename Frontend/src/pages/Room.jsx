@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from 'react'
+import { useEffect, useCallback, useState, useRef } from 'react'
 import { useSocket } from '../context/Socket.context';
 import { useNavigate } from 'react-router-dom';
 import peer from '../services/peer';
@@ -10,7 +10,9 @@ export default function Room() {
   const [myStream, setMyStream] = useState();
   const [remoteStream, setRemoteStream] = useState();
   const [zoomState, setZoomState] = useState(true);
+  const callEndAudioRef = useRef(null);
   // const hasStartedRef = useRef(false);
+  
   // for Both
   useEffect(() => {
     (async () => {
@@ -21,6 +23,10 @@ export default function Room() {
         });
         setMyStream(stream);
         stream.getTracks().forEach(track => peer.peer.addTrack(track, stream));
+
+        const audio = new Audio('/sounds/call-end.mp3');
+        audio.load(); 
+        callEndAudioRef.current = audio;
       } catch (err) {
         console.error("Error getting media stream:", err);
       }
@@ -59,8 +65,7 @@ export default function Room() {
 
   // for other person  
   const handleCallEnd = useCallback(async () => {
-    const audio = new Audio('/sounds/call-end.mp3');
-    audio.play();
+    callEndAudioRef.current?.play();
     setTimeout(() => {
       peer.peer.getSenders().forEach(sender => {
         if (sender.track) sender.track.stop();
@@ -96,13 +101,17 @@ export default function Room() {
     });
   }, []);
 
+  // For Both
+  // const sendStream = useCallback(async ()=> {
+    
+  // }, [])
+
   //creator
   // const handleNegoNeededEventListener = useCallback(async () => {
   //   if (!hasStartedRef.current) {
   //     hasStartedRef.current = true;
   //     return;
   //   }
-  //   console.log("negotiationneeded triggered!");
   //   const offer = await peer.getOffer();
   //   socket.emit("nego-needed", offer);
   // }, [socket]);
@@ -117,7 +126,7 @@ export default function Room() {
   return (
     <>
       <VideoPlayer myStream={myStream} remoteStream={remoteStream} zoomState={zoomState} />
-      <RoomToggles setMyStream={setMyStream} setRemoteStream={setRemoteStream} zoomState={zoomState} setZoomState={setZoomState} />
+      <RoomToggles setMyStream={setMyStream} setRemoteStream={setRemoteStream} zoomState={zoomState} setZoomState={setZoomState} callEndAudioRef={callEndAudioRef} />
       {!remoteStream && <JoiningLink />}
     </>
   )
