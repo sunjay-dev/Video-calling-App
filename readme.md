@@ -133,12 +133,12 @@ Make sure to allow permissions in your browser.
 ## 📸 Screenshots
 
 #### Home  
-<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/Assets/home.png" alt="Home page screenshot"  width="600"/>
+<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/assets/preview.webp" alt="Home page screenshot"  width="600"/>
 
 #### Room  
-<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/Assets/room.png" alt="Room page screenshot"  width="600"/>
+<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/assets/room.webp" alt="Room page screenshot"  width="600"/>
 
 #### 404 Page  
-<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/Assets/404.png" alt="404 page screenshot"  width="600"/>
+<img src="https://raw.githubusercontent.com/sunjay-dev/Video-calling-App/main/assets/404.webp" alt="404 page screenshot"  width="600"/>
 
 ---

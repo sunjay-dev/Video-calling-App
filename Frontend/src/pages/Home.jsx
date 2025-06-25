@@ -97,7 +97,7 @@ export default function Home() {
         </div>
       )}
       <header className="w-full p-4 flex items-center border-gray-200 select-none">
-        <img src="/logo.png" alt="Logo" className="h-12" />
+        <img src="/logo.webp" alt="Logo" className="h-12" />
       </header>
 
       <main className="flex flex-col items-center sm:mt-12 mt-18 px-6 text-center">
