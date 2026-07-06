@@ -1,10 +1,13 @@
 const Redis = require("ioredis");
-require('dotenv').config();
-
-const redis = new Redis({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-    password: process.env.REDIS_PASSWORD
-  });
+const redis = new Redis(process.env.REDIS_URL, {
+  tls: {
+    rejectUnauthorized: false,
+  },
+  maxRetriesPerRequest: null,
+  enableReadyCheck: false,
+  retryStrategy(times) {
+    return Math.min(times * 50, 2000);
+  },
+});
 
 module.exports = redis;
